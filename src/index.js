@@ -15,6 +15,7 @@ inputEl.addEventListener('input', debounce(onInput, DEBOUNCE_DELAY));
 
 function onInput(event) {
   const valueInput = event.target.value.trim();
+
   if (!valueInput) {
     clearMarkup();
     return;
