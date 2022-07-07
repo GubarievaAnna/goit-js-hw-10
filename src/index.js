@@ -6,6 +6,7 @@ import createMarkupForOneCountry from './templates/markup_country.hbs';
 import createMarkupForSomeCountries from './templates/markup_countries.hbs';
 
 const DEBOUNCE_DELAY = 300;
+const options = { timeout: 1000 };
 
 const inputEl = document.querySelector('#search-box');
 const divForInfoEl = document.querySelector('.country-info');
@@ -26,9 +27,8 @@ function onInput(event) {
       clearMarkup();
 
       if (countries.length > 10) {
-        Notiflix.Notify.info(
-          'Too many matches found. Please enter a more specific name.',
-          { timeout: 800 }
+        createAlertInfo(
+          'Too many matches found. Please enter a more specific name.'
         );
         return;
       }
@@ -45,11 +45,19 @@ function onInput(event) {
     })
     .catch(error => {
       clearMarkup();
-      Notiflix.Notify.failure(error, { timeout: 800 });
+      createAlertFail(error);
     });
 }
 
 function clearMarkup() {
   divForInfoEl.innerHTML = '';
   ulForInfoEl.innerHTML = '';
+}
+
+function createAlertInfo(message) {
+  Notiflix.Notify.info(message, options);
+}
+
+function createAlertFail(message) {
+  Notiflix.Notify.failure(message, options);
 }
