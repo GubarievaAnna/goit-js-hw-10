@@ -1,6 +1,8 @@
-<li>
-  <p style='font-size:15px; font-weight:600'>
-    <img src='{{flags.svg}}' alt='Flag of {{name.official}}' width='60' />
-    {{name.official}}
-  </p>
-</li>
+{{#each this}}
+  <li>
+    <p style='font-size:15px; font-weight:600'>
+      <img src='{{flags.svg}}' alt='Flag of {{name.official}}' width='60' />
+      {{name.official}}
+    </p>
+  </li>
+{{/each}}

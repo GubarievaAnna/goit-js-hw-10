@@ -34,9 +34,7 @@ function onInput(event) {
       }
 
       if (countries.length <= 10 && countries.length >= 2) {
-        ulForInfoEl.innerHTML = countries
-          .map(createMarkupForSomeCountries)
-          .join('');
+        ulForInfoEl.innerHTML = createMarkupForSomeCountries(countries);
         return;
       }
 
