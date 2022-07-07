@@ -1,38 +1,53 @@
 import './css/styles.css';
-import { fetchCountries } from './js/fetchCountries';
-import Notiflix from 'notiflix';
-import createMarkupForOneCountry from './templates/markup.hbs';
 import debounce from 'lodash.debounce';
+import Notiflix from 'notiflix';
+import { fetchCountries } from './js/fetchCountries';
+import createMarkupForOneCountry from './templates/markup_country.hbs';
+import createMarkupForSomeCountries from './templates/markup_countries.hbs';
 
 const DEBOUNCE_DELAY = 300;
 
-const divForInfoEl = document.querySelector('.country-info');
 const inputEl = document.querySelector('#search-box');
+const divForInfoEl = document.querySelector('.country-info');
+const ulForInfoEl = document.querySelector('.country-list');
 
 inputEl.addEventListener('input', debounce(onInput, DEBOUNCE_DELAY));
 
 function onInput(event) {
   if (!event.target.value) {
-    divForInfoEl.innerHTML = '';
+    clearMarkup();
     return;
   }
+
   fetchCountries(event.target.value)
     .then(countries => {
+      clearMarkup();
+
       if (countries.length > 10) {
-        alert('"Too many matches found. Please enter a more specific name."');
-        return '';
-      }
-      if (countries.length <= 10 && countries.length >= 2) {
-        return countries.map(createMarkupForSomeCountries).join('');
+        Notiflix.Notify.info(
+          'Too many matches found. Please enter a more specific name.',
+          { timeout: 800 }
+        );
+        return;
       }
 
-      return createMarkupForOneCountry(countries[0]);
+      if (countries.length <= 10 && countries.length >= 2) {
+        ulForInfoEl.innerHTML = countries
+          .map(createMarkupForSomeCountries)
+          .join('');
+        return;
+      }
+
+      divForInfoEl.innerHTML = createMarkupForOneCountry(countries[0]);
+      return;
     })
-    .then(markup => (divForInfoEl.innerHTML = markup))
-    .catch(error => Notiflix.Notify.failure(error));
+    .catch(error => {
+      clearMarkup();
+      Notiflix.Notify.failure(error, { timeout: 800 });
+    });
 }
 
-function createMarkupForSomeCountries({ flags, name }) {
-  return `<p><img src = "${flags.svg}" alt = "Flag of ${name.common}" width='80'> 
-  <span>${name.official}</span><p>`;
+function clearMarkup() {
+  divForInfoEl.innerHTML = '';
+  ulForInfoEl.innerHTML = '';
 }
