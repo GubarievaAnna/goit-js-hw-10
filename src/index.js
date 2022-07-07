@@ -14,12 +14,13 @@ const ulForInfoEl = document.querySelector('.country-list');
 inputEl.addEventListener('input', debounce(onInput, DEBOUNCE_DELAY));
 
 function onInput(event) {
-  if (!event.target.value) {
+  const valueInput = event.target.value.trim();
+  if (!valueInput) {
     clearMarkup();
     return;
   }
 
-  fetchCountries(event.target.value)
+  fetchCountries(valueInput)
     .then(countries => {
       clearMarkup();
 
